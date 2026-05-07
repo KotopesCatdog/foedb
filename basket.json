@@ -1,0 +1,25 @@
+{
+  "resources": {
+    "strategy_points": { "label": "СО", "iconClass": "bg-fp" },
+    "money": { "label": "Монеты", "iconClass": "bg-money" },
+    "supplies": { "label": "Молотки", "iconClass": "bg-supplies" },
+    "goods": { "label": "Товары", "iconClass": "bg-goods" },
+    "clan_power": { "label": "Сила гильдии", "iconClass": "bg-meet" },
+    "medals": { "label": "Медали", "iconClass": "bg-fp" }
+    "random_good_of_age": { "label": "Товары эпохи", "iconClass": "bg-goods" }
+    
+    
+   
+    
+  },
+  "boosts": {},
+  "features": {
+    "all": "Все", "guild_expedition": "Экспедиция", "battleground": "Поля",
+    "guild_raids": "Кванты", "campaign": "Кампания", "arcade": "Аркада",
+    "event": "Событие", "pvp": "PvP", "neighbor": "Соседи", "set": "Сет", "age": "Эпоха"
+  },
+  "settings": {
+    "maxBasketSize": 10,
+    "longPressDuration": 1500
+  }
+}
