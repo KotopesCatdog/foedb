@@ -166,17 +166,43 @@
             transform: scale(0.95);
         }
         
-     #statusMsg {
-    transition: opacity 0.5s;
-    font-size: 14px;
-    text-align: center;
-    padding: 10px;
-    border-radius: 8px;
-    background: rgba(0,0,0,0.6);
-    margin: 10px auto;
-    max-width: 80%;
-    font-family: monospace;
-}
+      #statusMsg {
+     transition: opacity 0.5s;
+     font-size: 14px;
+     text-align: center;
+     padding: 10px;
+     border-radius: 8px;
+     background: rgba(0,0,0,0.6);
+     margin: 10px auto;
+     max-width: 80%;
+     font-family: monospace;
+ }
+
+        /* Стили для кнопок загрузки файла */
+        .file-upload-btn {
+            background: #2d2d34;
+            border: 2px solid #9d4edd;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .file-upload-btn:hover {
+            background: #9d4edd;
+            border: 2px solid #9d4edd;
+        }
+
+        .file-upload-btn:active {
+            transform: scale(0.98);
+        }
+
+        .file-upload-btn.active {
+            background: #9d4edd;
+            border: 2px solid #c77dff;
+        }
     </style>
 </head>
 <body>
@@ -211,6 +237,21 @@
     
     
 </div>
+            
+            <!-- Кнопки загрузки локального файла -->
+            <div class="basket-btn-container">
+                <button class="file-upload-btn" id="uploadFileBtn" onclick="selectLocalFile()" title="Загрузить JSON файл со своего компьютера">
+                    📂 Загрузить JSON
+                </button>
+                <span class="basket-tooltip">Выбрать JSON файл со своего ПК</span>
+            </div>
+
+            <div class="basket-btn-container">
+                <button class="file-upload-btn" id="serverDataBtn" onclick="resetToServerData()" title="Вернуться к данным сервера" style="display: none;">
+                    🌐 На сервер
+                </button>
+                <span class="basket-tooltip">Вернуться к серверным данным</span>
+            </div>
             
             <div class="basket-btn-container">
                 <button class="basket-btn" onclick="openBasketModal()">
@@ -261,6 +302,8 @@
                 <li>Клик по колонке в корзине — сортировка</li>
                 <li>Колонки можно перетаскивать</li>
                 <li>Выбор эпохи и параметров для фильтрации</li>
+                <li><strong>Новое!</strong> Кнопка "📂 Загрузить JSON" позволяет загружать локальные JSON файлы</li>
+                <li>Кнопка "🌐 На сервер" возвращает загрузку данных с сервера</li>
                 <li>Внимание! Ведутся работы, возможны неточности</li>
                 <li>Для загрузки последних изменений обновляйте страницу Ctrl+F5</li>
             </ul>
@@ -440,6 +483,9 @@
         
         // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', () => {
+            // Инициализируем загрузку файла
+            initLocalFileUpload();
+            
             loadBasketConfig().then(() => {
                 loadData();
                 loadBasket();
@@ -640,6 +686,24 @@ window.switchJson = async function(url) {
     const select = document.getElementById('jsonSelect');
     if (select) select.value = url;
     await loadDataWithProgress();
+};
+
+// Обновляем UI кнопок при загрузке локального файла
+const originalSelectLocalFile = selectLocalFile;
+window.selectLocalFile = function() {
+    const uploadBtn = document.getElementById('uploadFileBtn');
+    const serverBtn = document.getElementById('serverDataBtn');
+    originalSelectLocalFile();
+};
+
+// Перехватываем resetToServerData для обновления UI
+const originalResetToServerData = resetToServerData;
+window.resetToServerData = function() {
+    const uploadBtn = document.getElementById('uploadFileBtn');
+    const serverBtn = document.getElementById('serverDataBtn');
+    if (serverBtn) serverBtn.style.display = 'none';
+    if (uploadBtn) uploadBtn.style.display = 'block';
+    originalResetToServerData();
 };
 
 console.log('✅ Индикатор загрузки активирован');
