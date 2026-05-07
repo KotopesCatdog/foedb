@@ -1,6 +1,8 @@
 // === ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ===
 const DATA_URL = 'https://foehelp.ru//building.json';
 let dataLoadDate = null;  // Дата файла на сервере (оставьте, если хотите показывать дату)
+let useLocalFile = false; // Флаг использования локального файла
+let localFileData = null; // Данные локального файла
 
 // === ФУНКЦИЯ ОБНОВЛЕНИЯ ДАТЫ ===
 function updateServerFileDate() {
@@ -21,31 +23,101 @@ function updateServerFileDate() {
     }
 }
 
+// === ФУНКЦИЯ ЗАГРУЗКИ ЛОКАЛЬНОГО ФАЙЛА ===
+function initLocalFileUpload() {
+    // Создаем input для файла (если его еще нет)
+    if (!document.getElementById('localFileInput')) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.id = 'localFileInput';
+        input.accept = '.json';
+        input.style.display = 'none';
+        
+        input.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            try {
+                const text = await file.text();
+                localFileData = JSON.parse(text);
+                useLocalFile = true;
+                
+                const statusMsg = document.getElementById('statusMsg');
+                statusMsg.textContent = `✅ Загружен локальный файл: ${file.name}`;
+                statusMsg.style.color = '#4ecdc4';
+                
+                // Перезагружаем данные
+                loadData();
+            } catch (error) {
+                const statusMsg = document.getElementById('statusMsg');
+                statusMsg.textContent = `❌ Ошибка загрузки файла: ${error.message}`;
+                statusMsg.style.color = '#ff6b6b';
+                console.error('Ошибка при чтении файла:', error);
+            }
+        });
+        
+        document.body.appendChild(input);
+    }
+}
+
+// === ФУНКЦИЯ ОТКРЫТИЯ ДИАЛОГА ВЫБОРА ФАЙЛА ===
+function selectLocalFile() {
+    const input = document.getElementById('localFileInput');
+    if (input) {
+        input.click();
+    }
+}
+
+// === ФУНКЦИЯ СБРОСА И ВОЗВРАТА К СЕРВЕРНЫМ ДАННЫМ ===
+function resetToServerData() {
+    useLocalFile = false;
+    localFileData = null;
+    const statusMsg = document.getElementById('statusMsg');
+    statusMsg.textContent = 'Переключение на данные сервера...';
+    statusMsg.style.color = '#ffd700';
+    loadData();
+}
+
 // === ЗАГРУЗКА ДАННЫХ ===
 async function loadData() {
-    console.log(`🚀 Начало загрузки данных из: ${DATA_URL}`);
+    console.log(`🚀 Начало загрузки данных. Источник: ${useLocalFile ? 'Локальный файл' : 'Сервер'}`);
     const statusMsg = document.getElementById('statusMsg');
     statusMsg.textContent = "Загрузка конфигурации...";
     
     await loadBasketConfig();
-    statusMsg.textContent = "Подключение к серверу...";
+    statusMsg.textContent = "Подключение к данным...";
     
     try {
-        // Получаем дату файла
-        const headResponse = await fetch(DATA_URL, { method: 'HEAD' });
-        const lastModified = headResponse.headers.get('Last-Modified');
-        if (lastModified) {
-            dataLoadDate = new Date(lastModified);
-        } else {
+        let rawData;
+        
+        if (useLocalFile && localFileData) {
+            // Используем локальный файл
+            console.log('📂 Используем локальный файл');
+            rawData = localFileData;
             dataLoadDate = new Date();
+            updateServerFileDate();
+        } else {
+            // Загружаем с сервера
+            console.log(`🌐 Загружаем с сервера: ${DATA_URL}`);
+            
+            // Получаем дату файла
+            const headResponse = await fetch(DATA_URL, { method: 'HEAD' });
+            const lastModified = headResponse.headers.get('Last-Modified');
+            if (lastModified) {
+                dataLoadDate = new Date(lastModified);
+            } else {
+                dataLoadDate = new Date();
+            }
+            updateServerFileDate();
+            
+            // Загружаем данные
+            const response = await fetch(DATA_URL);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            
+            rawData = await response.json();
+            useLocalFile = false;
         }
-        updateServerFileDate();
         
-        // Загружаем данные
-        const response = await fetch(DATA_URL);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        
-        const rawData = await response.json();
         console.log("✅ JSON получен. Тип:", Array.isArray(rawData) ? "Массив" : "Объект");
         
         statusMsg.textContent = "Анализ данных...";
