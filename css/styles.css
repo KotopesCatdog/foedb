@@ -1,0 +1,1437 @@
+:root {
+    --bg-color: #1a1a1d;
+    --text-color: #c5c6c7;
+    --accent-color: #66fcf1;
+    --box-bg: #2d2d34;
+    --border-color: #45454b;
+    --tooltip-bg: rgba(20, 20, 25, 0.98);
+    --tooltip-border: #66fcf1;
+    --hover-bg: rgba(102, 252, 241, 0.1);
+    --close-btn-color: #ff4500;
+    --basket-color: #ffd700;
+}
+
+/* === ФОН СТРАНИЦЫ === */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    background-image: none;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    transition: background-image 0.5s ease-in-out;
+}
+
+/* === ЗАТЕМНЕНИЕ ФОНА ДЛЯ ЧИТАЕМОСТИ === */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* === КОНТЕЙНЕРЫ ПОВЕРХ ФОНА === */
+.header-container,
+.search-container,
+.results-grid,
+.modal-overlay {
+    position: relative;
+    z-index: 1;
+}
+
+/* === ШАПКА === */
+.header-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    margin-top: 20px;          /* Добавляем отступ сверху */
+    width: 100%;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 100px;         /* Минимальная высота для лучшего распределения */
+}
+
+/* === ЗАГОЛОВОК ПО ЦЕНТРУ === */
+.header-left {
+    flex: 0 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-container h1 {
+    margin: 0;
+    font-size: 36px;
+    line-height: 1.2;
+    color: #4ecdc4;
+    text-align: center;
+}
+
+/* === ИНФОРМАЦИЯ СЛЕВА === */
+.header-info {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 12px;
+    color: #888;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.5);  /* Полупрозрачный фон для читаемости */
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+/* === КНОПКИ СПРАВА - ИЗМЕНЕНО ПОЗИЦИОНИРОВАНИЕ === */
+.header-buttons {
+    position: absolute;
+    right: 0;
+    top: 110%;                    /* Центрируем по вертикали относительно header-container */
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+/* Альтернативный вариант - если нужно опустить кнопки ниже центра */
+.header-buttons.alternative {
+    top: auto;
+    bottom: 0;
+    transform: translateY(0);
+}
+
+/* === ОБЩИЕ СТИЛИ ДЛЯ ВСЕХ КНОПОК === */
+.basket-btn, .top-btn, .help-btn {
+    width: 200px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    border: 2px solid;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.basket-btn {
+    background: var(--box-bg);
+    border-color: #ff4500;
+    color: #ff4500;
+}
+
+.basket-btn:hover {
+    background: #ff4500;
+    color: #000;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+.top-btn {
+    background: var(--box-bg);
+    border-color: #4169e1;
+    color: #4169e1;
+}
+
+.top-btn:hover {
+    background: #4169e1;
+    color: #000;
+    box-shadow: 0 0 15px rgba(78, 205, 196, 0.4);
+}
+
+/* === КНОПКА ПОМОЩИ === */
+.help-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--box-bg);
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s;
+    white-space: nowrap;
+    cursor: pointer;
+    width: 200px;
+    box-sizing: border-box;
+}
+
+.help-btn:hover {
+    background: #ffffff;
+    color: #000;
+    box-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
+}
+
+.btn-small {
+    transition: all 0.2s ease;
+}
+
+.btn-small:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+.toast-notification.success {
+    background: linear-gradient(135deg, #10a37f, #0e8c6c);
+}
+
+.toast-notification.error {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.toast-notification.info {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+/* Специфические стили для Firefox */
+@-moz-document url-prefix() {
+    .header-container {
+        min-height: 120px;       /* Увеличиваем высоту для Firefox */
+    }
+    
+    .header-buttons {
+        top: 60%;                /* Немного ниже для Firefox */
+    }
+}
+
+/* === АДАПТИВ ДЛЯ МОБИЛЬНЫХ === */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 0;
+        min-height: auto;
+        margin-top: 10px;
+    }
+
+    .header-left {
+        width: 100%;
+        justify-content: center;
+        margin: 10px 0;
+    }
+
+    .header-info {
+        position: static;
+        transform: none;
+        margin-bottom: 10px;
+        align-items: center;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.5);
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .header-buttons {
+        position: static;
+        transform: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 15px;
+        margin-bottom: 10px;
+    }
+
+    .basket-btn, .top-btn, .help-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    @-moz-document url-prefix() {
+        .header-buttons {
+            margin-top: 20px;
+        }
+    }
+}
+
+/* === ПОДСКАЗКА К КОРЗИНЕ === */
+.basket-btn-container {
+    position: relative;
+    display: inline-block;
+}
+
+.basket-tooltip {
+    visibility: hidden;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.95);
+    color: #fff;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: normal;
+    white-space: nowrap;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+    border: 1px solid var(--basket-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    margin-top: 10px;
+    pointer-events: none;
+}
+
+.basket-tooltip::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent var(--basket-color) transparent;
+}
+
+.basket-btn-container:hover .basket-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* === ПОДСКАЗКА К ТОП === */
+.top-btn-container {
+    position: relative;
+    display: inline-block;
+}
+
+.top-tooltip {
+    visibility: hidden;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.95);
+    color: #fff;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: normal;
+    white-space: nowrap;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+    border: 1px solid var(--basket-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    margin-top: 10px;
+    pointer-events: none;
+}
+
+.top-tooltip::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent var(--basket-color) transparent;
+}
+
+.top-btn-container:hover .basket-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* === ПОИСК === */
+.search-container {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 30px;
+}
+
+.search-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+input#searchInput {
+    width: 100%;
+    padding: 15px 45px 15px 15px;
+    font-size: 18px;
+    background-color: var(--box-bg);
+    border: 2px solid var(--border-color);
+    color: white;
+    border-radius: 8px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+input#searchInput:focus {
+    border-color: var(--accent-color);
+}
+
+input#searchInput:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+#clearBtn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #ff4500;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 10;
+    display: none;
+    padding: 0;
+    line-height: 1;
+}
+
+#clearBtn:hover {
+    background: #ff6b6b;
+}
+
+/* === ЧЕКБОКСЫ === */
+.filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 12px;
+    justify-content: center;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.filter-option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--accent-color);
+}
+
+.filter-option:hover {
+    color: var(--accent-color);
+}
+
+/* === СТАТУС === */
+.status-msg {
+    text-align: center;
+    margin: 10px 0 15px 0;
+    font-style: italic;
+    color: #888;
+    height: 20px;
+    font-size: 14px;
+}
+
+/* === РЕЗУЛЬТАТЫ === */
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+    width: 100%;
+    max-width: 1400px;
+    position: relative;
+    z-index: 1;
+}
+
+/* === КАРТОЧКА ЗДАНИЯ === */
+.building-card {
+    background-color: var(--box-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    user-select: none;
+    z-index: 2;
+}
+
+/* === ЦВЕТНЫЕ РАМКИ ПО ТИПУ ЗДАНИЯ === */
+.building-card.type-production { border-left: 14px solid #416dff; }
+.building-card.type-residential { border-left: 14px solid #7abaff; }
+.building-card.type-greatbuilding { border-left: 14px solid #e6542f; }
+.building-card.type-decoration { border-left: 14px solid #497445; }
+.building-card.type-culture { border-left: 14px solid #7d4900; }
+.building-card.type-military { border-left: 14px solid #ff8c00; }
+.building-card.type-goods { border-left: 14px solid #7d2a4d; }
+.building-card.type-street { border-left: 14px solid #888; }
+.building-card.type-main_building { border-left: 14px solid #ffd700; }
+.building-card.type-special { border-left: 14px solid #ff1493; }
+.building-card.type-castle_system { border-left: 14px solid #4169e1; }
+.building-card.type-guild_raids { border-left: 14px solid #9370db; }
+.building-card.type-cultural_goods_production { border-left: 14px solid #7d2a4d; }
+
+/* === ЗАГОЛОВОК КАРТОЧКИ === */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    min-height: 50px;
+}
+
+.card-title {
+    font-weight: bold;
+    font-size: 14px;
+    color: #fff;
+    flex: 1;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 5px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 85%;
+}
+
+/* === РАЗМЕР ЗДАНИЯ — ПРАВЫЙ НИЖНИЙ УГОЛ === */
+.card-size {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: #000;
+    color: #ffd700;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+/* === СТАРАЯ СТАТИСТИКА (скрываем) === */
+.card-stats {
+    display: none;
+}
+
+/* === ПОДСВЕТКА КОРЗИНЫ === */
+.building-card.in-basket {
+    border-color: var(--basket-color) !important;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3) !important;
+}
+
+.building-card.in-basket:hover {
+    border-color: var(--basket-color) !important;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5) !important;
+    transform: translateY(-5px);
+}
+
+.building-card.in-basket .card-header {
+    background: rgba(255, 215, 0, 0.15);
+    border-radius: 4px;
+    padding: 5px;
+    margin: -15px -15px 8px -15px;
+}
+
+.building-card.in-basket .card-title::after {
+    content: " ✓";
+    color: var(--basket-color);
+    font-weight: bold;
+}
+
+/* === HOVER ЭФФЕКТЫ === */
+.building-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(102, 252, 241, 0.15);
+    border-color: var(--accent-color);
+    z-index: 10;
+}
+
+.building-card.active {
+    border-color: #fff;
+    box-shadow: 0 0 20px rgba(102, 252, 241, 0.4);
+    background-color: var(--hover-bg);
+    z-index: 20;
+}
+
+.building-card.added {
+    animation: flashGreen 0.5s ease;
+    border-color: #4ecdc4;
+}
+
+@keyframes flashGreen {
+    0% { box-shadow: 0 0 0 rgba(78, 205, 196, 0); }
+    50% { box-shadow: 0 0 20px rgba(78, 205, 196, 0.6); }
+    100% { box-shadow: 0 0 0 rgba(78, 205, 196, 0); }
+}
+
+/* === ТУЛТИП === */
+.tooltip-box {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-top: 10px;
+    transform: translateX(-50%) translateY(0);
+    width: 220px;
+    max-height: 85vh;
+    overflow-y: auto;
+    background-color: var(--tooltip-bg);
+    border: 1px solid var(--tooltip-border);
+    border-radius: 4px;
+    padding: 0;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 0 25px rgba(0,0,0,0.9);
+    pointer-events: auto;
+    font-size: 13px;
+    line-height: 1.4;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    margin-left: -8px;
+}
+
+.building-card:hover .tooltip-box,
+.building-card.active .tooltip-box {
+    display: block;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.tt-header {
+    font-weight: bold;
+    color: #fff;
+    font-size: 16px;
+    border-bottom: 1px solid #555;
+    padding: 10px 12px;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px 4px 0 0;
+    user-select: none;
+}
+
+.tt-close-btn {
+    color: var(--close-btn-color);
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 0.8;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: color 0.2s;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+.tt-close-btn:hover {
+    color: #ff6b6b;
+    text-shadow: 0 0 5px var(--close-btn-color);
+}
+
+.era-select-wrapper {
+    width: 100%;
+    margin-top: 5px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+select.era-selector {
+    background: #333;
+    border: 1px solid var(--accent-color);
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+    max-width: 200px;
+    font-family: inherit;
+}
+
+select.era-selector option {
+    background: #222;
+    color: #fff;
+}
+
+.tt-body {
+    padding: 12px;
+}
+
+.tt-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.tt-label {
+    color: #aaa;
+}
+
+.tt-value {
+    color: #fff;
+    font-weight: 600;
+    text-align: right;
+}
+
+.tt-value.positive { color: #4ecdc4; }
+.tt-value.negative { color: #ff6b6b; }
+.tt-value.neutral { color: #ffd700; }
+
+.tt-section {
+    margin-top: 10px;
+    border-top: 1px dashed #555;
+    padding-top: 8px;
+}
+
+.tt-section-title {
+    color: var(--accent-color);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.prod-option {
+    background: rgba(255,255,255,0.05);
+    padding: 5px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    border-left: 2px solid var(--accent-color);
+}
+
+.prod-option.chain { border-left-color: #ffd700 !important; }
+.prod-option.chain-boost { border-left-color: #ff6b6b !important; }
+
+.res-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 2px;
+    padding-left: 5px;
+    align-items: center;
+}
+
+.chance-bar {
+    height: 4px;
+    background: #444;
+    border-radius: 2px;
+    width: 60px;
+    margin-left: 5px;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.chance-fill {
+    height: 100%;
+    background: var(--accent-color);
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 18px;
+}
+
+/* === ИКОНКИ === */
+.icon-sm {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.bonus-icon-img {
+    width: 32px;
+    height: 32px;
+    margin-right: 6px;
+    vertical-align: middle;
+    flex-shrink: 0;
+    object-fit: contain;
+    display: inline-block;
+}
+
+.tt-section .bonus-icon-img {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.tt-section .res-item {
+    font-size: 14px;
+    margin-bottom: 6px;
+    padding: 4px 0;
+}
+
+/* === ЦВЕТА ИКОНОК === */
+.bg-money { background: #ffd700; }
+.bg-supplies { background: #cd7f32; }
+.bg-pop { background: #ff6b6b; }
+.bg-happy { background: #4ecdc4; }
+.bg-goods { background: #a020f0; }
+.bg-unit { background: #ff4500; }
+.bg-fp { background: #4a90e2; }
+.bg-meet { background: #e91e63; }
+.bg-boost { background: #00bcd4; }
+.bg-generic { background: #999; }
+.bg-fragment { background: #e91e63; border: 1px solid #fff; }
+.bg-blueprint { background: #2196f3; }
+.bg-ally-military { background: #ff4500; }
+.bg-ally-goods { background: #a020f0; }
+.bg-ally-money { background: #ffd700; }
+.bg-ally-supplies { background: #cd7f32; }
+.bg-ally-all { background: #66fcf1; }
+
+/* === СКРОЛЛБАР ТУЛТИПА === */
+.tooltip-box::-webkit-scrollbar { width: 6px; }
+.tooltip-box::-webkit-scrollbar-track { background: #222; }
+.tooltip-box::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
+
+/* === МОДАЛЬНОЕ ОКНО КОРЗИНЫ === */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 2000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal-content {
+    background: var(--box-bg);
+    border: 2px solid var(--basket-color);
+    border-radius: 10px;
+    width: 90%;
+    max-width: 1800px;
+    max-height: 90vh;
+    overflow: hidden;
+    padding: 20px;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 10px;
+}
+
+.modal-title {
+    font-size: 20px;
+    color: var(--basket-color);
+    font-weight: bold;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: #ff4500;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.modal-close:hover { color: #ff6b6b; }
+
+.basket-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+.basket-era-select {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.basket-era-select label {
+    color: #aaa;
+    font-size: 14px;
+}
+
+.basket-era-select select {
+    background: #333;
+    border: 1px solid var(--basket-color);
+    color: #fff;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+}
+
+.basket-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.btn-export { background: #4ecdc4; color: #000; }
+.btn-export:hover { background: #45b7aa; }
+.btn-clear { background: #ff4500; color: white; }
+.btn-clear:hover { background: #ff6b6b; }
+
+.basket-table-container {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 55vh;
+    flex: 1;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+.basket-table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.basket-table th,
+.basket-table td {
+    border: 1px solid #444;
+    padding: 8px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.basket-table td:nth-child(2) {
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 250px;
+    min-width: 150px;
+}
+
+.basket-table th:nth-child(2) {
+    min-width: 150px;
+}
+
+/* Колонка "Размер" — минимальная ширина */
+.basket-table .col-size {
+    width: 1%;
+    min-width: unset;
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* Sticky первая колонка для таблиц без кнопки действия (кванты, guild_raids) */
+.basket-table.sticky-name th:nth-child(1),
+.basket-table.sticky-name td:nth-child(1) {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #1a1a2e;
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 250px;
+    min-width: 150px;
+}
+
+.basket-table.sticky-name th:nth-child(1) {
+    background: rgba(26, 26, 46, 1);
+    z-index: 3;
+}
+
+/* Убрать sticky min-width со второй колонки в таблицах sticky-name (там "Размер") */
+.basket-table.sticky-name td:nth-child(2),
+.basket-table.sticky-name th:nth-child(2) {
+    white-space: nowrap;
+    min-width: unset;
+    max-width: unset;
+    width: 1%;
+    word-wrap: unset;
+    word-break: unset;
+    text-align: center;
+}
+
+.basket-table th {
+    background: rgba(255, 215, 0, 0.1);
+    color: var(--basket-color);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.basket-table th:hover {
+    background: rgba(255, 215, 0, 0.2);
+}
+
+/* .basket-table th.sorted-asc::after { content: " ▲"; }
+.basket-table th.sorted-desc::after { content: " ▼"; } */
+.basket-table tr:hover { background: rgba(255,255,255,0.05); }
+
+.basket-table .col-action {
+    width: 40px;
+    text-align: center;
+}
+
+.basket-table .btn-remove {
+    background: #ff4500;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.basket-table .btn-remove:hover { background: #ff6b6b; }
+
+/* === УВЕДОМЛЕНИЯ === */
+.toast-notification {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #4ecdc4;
+    color: #000;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    z-index: 3000;
+    transition: transform 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    opacity: 0;
+}
+
+.toast-notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.toast-notification.error {
+    background: #ff4500;
+    color: white;
+}
+
+/* === АДАПТИВ ДЛЯ МОБИЛЬНЫХ (ПОВТОР) === */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+
+    .header-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-left: 0;
+        align-items: center;
+    }
+
+    .help-btn {
+        justify-content: center;
+    }
+}
+
+/* Стили для draggable колонок */
+.draggable-column {
+    user-select: none;
+    position: relative;
+    transition: background-color 0.2s ease;
+}
+
+.draggable-column:hover {
+    background-color: rgba(78, 205, 196, 0.1);
+}
+
+.drag-handle {
+    cursor: grab;
+    opacity: 0.3;
+    transition: opacity 0.2s ease;
+}
+
+.draggable-column:hover .drag-handle {
+    opacity: 0.7;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* Визуальная обратная связь при перетаскивании */
+.draggable-column.drag-over {
+    border-left: 2px solid #4ecdc4;
+    background-color: rgba(78, 205, 196, 0.2);
+}
+
+/* Анимация при перетаскивании */
+.draggable-column:active {
+    cursor: grabbing;
+}
+
+#help-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #2196F3;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+#help-btn:hover {
+    background: #1976D2;
+}
+
+#help-window {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#help-window.hidden {
+    display: none;
+}
+
+.help-content {
+    background: white;       /* Белый фон */
+    color: black;            /* Черный цвет текста */
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    font-family: Arial, sans-serif; /* Можно добавить шрифт, если нужно */
+}
+
+/* Дополнительно: чтобы ссылки внутри справки были видны (например, синими) */
+.help-content a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+/* Курсор для перетаскиваемых заголовков */
+#basketTable th:not(.col-action) {
+    cursor: grab !important;
+}
+
+#basketTable th:not(.col-action):active,
+#basketTable th.dragging {
+    cursor: grabbing !important;
+}
+
+/* Дополнительно — на случай, если браузер упрямится */
+#basketTable th[draggable="true"] {
+    cursor: grab !important;
+}
+
+/* === МОДАЛЬНОЕ ОКНО ТОП === */
+/* === ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ ТОП ЗДАНИЙ (top-buildings.js) === */
+
+/* Модальное окно топ зданий - обновлённые стили */
+#topModal .modal-content {
+    max-width: 1000px;
+    width: 90%;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    overflow: visible;
+}
+
+#topModal .modal-header {
+    background: #1a2e45;
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 16px 24px;
+    margin-bottom: 0;
+}
+
+#topModal .modal-title {
+    color: white;
+    font-size: 1.3rem;
+}
+
+#topModal .modal-close {
+    color: white;
+    opacity: 0.8;
+}
+
+#topModal .modal-close:hover {
+    opacity: 1;
+}
+
+/* Контейнер для компонента топ зданий */
+#top-buildings-container {
+    background: transparent;
+}
+
+/* Переопределение стилей компонента top-buildings.js для соответствия теме */
+.top-buildings-container {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+.top-card {
+    background: var(--box-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 0 0 16px 16px !important;
+    box-shadow: none !important;
+}
+
+.top-header {
+    background: #1a2e45 !important;
+    border-radius: 0 !important;
+    padding: 16px 24px !important;
+}
+
+.top-header h1 {
+    font-size: 1.3rem !important;
+    margin: 0 !important;
+}
+
+.top-header p {
+    font-size: 0.75rem !important;
+    opacity: 0.7 !important;
+}
+
+.top-controls {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 16px 24px !important;
+}
+
+.top-ctrl-group label {
+    color: var(--accent-color) !important;
+}
+
+.top-ctrl-group select {
+    background: #333 !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+.top-ctrl-group select:hover {
+    border-color: var(--accent-color) !important;
+}
+
+.top-status {
+    background: rgba(0, 0, 0, 0.3) !important;
+    color: var(--text-color) !important;
+    border-left-color: var(--accent-color) !important;
+    margin: 16px 24px 0 24px !important;
+}
+
+.top-status.error {
+    background: rgba(255, 69, 0, 0.2) !important;
+    border-left-color: #ff4500 !important;
+}
+
+.top-table-wrapper {
+    margin: 16px 24px 24px 24px !important;
+    border-color: var(--border-color) !important;
+}
+
+.top-table th {
+    background: rgba(65, 105, 225, 0.2) !important;
+    color: #4169e1 !important;
+    border-bottom-color: var(--border-color) !important;
+}
+
+.top-table td {
+    border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-color) !important;
+}
+
+.top-table tr:hover td {
+    background: rgba(102, 252, 241, 0.05) !important;
+}
+
+.top-building-name {
+    color: var(--text-color) !important;
+}
+
+.top-param-number {
+    color: var(--accent-color) !important;
+}
+
+.top-sort-header {
+    cursor: pointer;
+}
+
+.top-sort-header:hover {
+    background: rgba(65, 105, 225, 0.3) !important;
+}
+
+.top-footer {
+    color: #666 !important;
+    border-top-color: var(--border-color) !important;
+    font-size: 0.7rem !important;
+}
+
+/* Убираем лишние отступы у контейнера внутри модалки */
+#topModal .basket-table-container {
+    overflow-x: auto;
+    margin: 0;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    #topModal .modal-content {
+        width: 95%;
+    }
+    
+    .top-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .top-ctrl-group {
+        min-width: auto;
+    }
+    
+    .top-building-name {
+        max-width: 150px !important;
+        word-break: break-word;
+    }
+}
+/* === МОДАЛЬНОЕ ОКНО ТОП === */
+
+#topModal .modal-content {
+    max-width: 1000px;
+    width: 90%;
+    background: var(--box-bg);
+    border: 2px solid #4169e1;
+    border-radius: 16px;
+    padding: 0;
+    overflow: hidden;
+}
+
+#topModal .modal-header {
+    background: #1a2e45;
+    color: white;
+    border-radius: 0;
+    padding: 16px 24px;
+    margin-bottom: 0;
+}
+
+#topModal .modal-title {
+    color: white;
+}
+
+#topModal .modal-close {
+    color: white;
+}
+
+/* Скрытый элемент */
+.hidden {
+    display: none !important;
+}
+
+.icon-sm.bg-special-goods {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    border-radius: 3px;
+}
+
+/* === ФИКСАЦИЯ ПЕРВОЙ КОЛОНКИ (НАЗВАНИЕ) В ТАБЛИЦЕ КВАНТЫ === */
+#quantaTable th:first-child,
+#quantaTable td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: var(--box-bg);
+    z-index: 10;
+}
+
+#quantaTable th:first-child {
+    background-color: rgba(102, 252, 241, 0.15);
+    z-index: 20;
+}
+
+/* Тень для фиксированной колонки */
+#quantaTable td:first-child {
+    box-shadow: 2px 0 5px -2px rgba(0,0,0,0.5);
+}
